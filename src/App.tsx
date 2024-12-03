@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import useCountStore from './store/CountStore';
+import ModeToggle from './components/mode-toggle';
 
 function App() {
   const num = useCountStore((store) => store.num);
@@ -26,6 +27,7 @@ function App() {
           Click Me -1
         </Button>
       </div>
+      <ModeToggle />
     </div>
   );
 }
