@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
-import useCountStore from './store/CountStore';
-import ModeToggle from './components/mode-toggle';
+import useCountStore from '@/store/CountStore';
+import ModeToggle from '@/components/ModeToggle';
 
 function App() {
   const num = useCountStore((store) => store.num);
