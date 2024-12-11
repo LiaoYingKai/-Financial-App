@@ -1,6 +1,11 @@
+import { useState } from 'react';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+
+import Layout from '@/components/Layout';
 import { Button } from '@/components/ui/button';
-import { calculateSemiAnnualCompoundAssets } from '@/lib/core';
-import { Input } from '@/components/ui/input';
 import {
   Form,
   FormControl,
@@ -8,11 +13,8 @@ import {
   FormItem,
   FormLabel,
 } from '@/components/ui/form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import Layout from '@/components/Layout';
-import { useState } from 'react';
+import { Input } from '@/components/ui/input';
+import { calculateSemiAnnualCompoundAssets } from '@/lib/core';
 
 const FormSchema = z.object({
   currentAge: z.string(),
