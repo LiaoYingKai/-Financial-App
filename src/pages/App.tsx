@@ -1,32 +1,65 @@
 import { Button } from '@/components/ui/button';
-import useCountStore from '@/store/CountStore';
 import ModeToggle from '@/components/ModeToggle';
+import { calculateSemiAnnualCompoundAssets } from '@/lib/core';
+import { Input } from '@/components/ui/input';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+
+const FormSchema = z.object({
+  username: z.string().min(2, {
+    message: 'Username must be at least 2 characters.',
+  }),
+});
 
 function App() {
-  const num = useCountStore((store) => store.num);
-  const setNumber = useCountStore((store) => store.setNumber);
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      username: '',
+    },
+  });
+
+  function onSubmit(data: z.infer<typeof FormSchema>) {
+    console.log(data);
+    console.log(calculateSemiAnnualCompoundAssets(20, 65, 1000, 1000, 5));
+  }
 
   return (
     <div className="w-full h-full flex items-center justify-center flex-col gap-4">
-      <h1 className="text-2xl">
-        Current Number: <span className="font-bold">{num}</span>
-      </h1>
-      <div className="flex items-center gap-4">
-        <Button
-          onClick={() => {
-            setNumber(num + 1);
-          }}
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="w-2/3 space-y-6"
         >
-          Click Me +1
-        </Button>
-        <Button
-          onClick={() => {
-            setNumber(num - 1);
-          }}
-        >
-          Click Me -1
-        </Button>
-      </div>
+          <FormField
+            control={form.control}
+            name="username"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Username</FormLabel>
+                <FormControl>
+                  <Input placeholder="shadcn" {...field} />
+                </FormControl>
+                <FormDescription>
+                  This is your public display name.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button type="submit">Submit</Button>
+        </form>
+      </Form>
       <ModeToggle />
     </div>
   );
