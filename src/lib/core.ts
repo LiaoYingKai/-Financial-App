@@ -1,15 +1,17 @@
+export type Assets = {
+  month: number;
+  totalAssets: number;
+  totalSavings: number;
+  totalInvestments: number;
+};
+
 type CalculateSemiAnnualCompoundAssets = (
   currentAge: number,
   retirementAge: number,
   monthlySavings: number,
   monthlyInvestment: number,
   annualReturnRate: number
-) => {
-  month: number;
-  totalAssets: number;
-  totalSavings: number;
-  totalInvestments: number;
-}[];
+) => Assets[];
 
 export const calculateSemiAnnualCompoundAssets: CalculateSemiAnnualCompoundAssets =
   (
@@ -36,7 +38,7 @@ export const calculateSemiAnnualCompoundAssets: CalculateSemiAnnualCompoundAsset
 
       // 每年 8 月和 12 月應用投資複利增長
       const currentMonth = month % 12; // 取得當前年份的月份（1 到 12）
-      if (currentMonth === 8 || currentMonth === 12) {
+      if (currentMonth === 8 || currentMonth === 0) {
         totalInvestments *= 1 + semiAnnualReturnRate;
       }
 
