@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import AssetsList from '@/components/AssetsList';
+import FormCalendar from '@/components/FormCalendar';
 import Layout from '@/components/Layout';
 import { Button } from '@/components/ui/button';
 import {
@@ -18,7 +19,8 @@ import { Input } from '@/components/ui/input';
 import { Assets, calculateSemiAnnualCompoundAssets } from '@/lib/core';
 
 const FormSchema = z.object({
-  currentAge: z.string(),
+  birthday: z.date(),
+  startDate: z.date(),
   retirementAge: z.string(),
   monthlySavings: z.string(),
   monthlyInvestment: z.string(),
@@ -30,7 +32,8 @@ function App() {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      currentAge: '20',
+      birthday: new Date(),
+      startDate: new Date(),
       retirementAge: '65',
       monthlySavings: '1000',
       monthlyInvestment: '1000',
@@ -38,17 +41,40 @@ function App() {
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  const getAge = (birthday: Date, currentDate: Date): number => {
+    const birthYear = birthday.getFullYear();
+    const birthMonth = birthday.getMonth();
+    const birthDay = birthday.getDate();
+
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth();
+    const currentDay = currentDate.getDate();
+
+    let age = currentYear - birthYear;
+
+    // 如果當前日期在生日之前，則年齡減一
+    if (
+      currentMonth < birthMonth ||
+      (currentMonth === birthMonth && currentDay < birthDay)
+    ) {
+      age--;
+    }
+
+    return age;
+  };
+
+  const onSubmit = (data: z.infer<typeof FormSchema>) => {
+    const age = getAge(data.birthday, data.startDate);
     setResult(
       calculateSemiAnnualCompoundAssets(
-        parseInt(data.currentAge),
+        age,
         parseInt(data.retirementAge),
         parseInt(data.monthlySavings),
         parseInt(data.monthlyInvestment),
         parseInt(data.annualReturnRate)
       )
     );
-  }
+  };
 
   return (
     <Layout>
@@ -61,19 +87,28 @@ function App() {
             >
               <FormField
                 control={form.control}
-                name="currentAge"
+                name="birthday"
                 render={({ field }) => (
-                  <FormItem className="flex items-center gap-2 space-y-0">
-                    <FormLabel className="flex-shrink-0 w-24">
-                      現在年紀
-                    </FormLabel>
-                    <FormControl>
-                      <Input placeholder="18" {...field} />
-                    </FormControl>
-                    歲
-                  </FormItem>
+                  <FormCalendar
+                    value={field.value}
+                    onChange={field.onChange}
+                    label="生日"
+                  />
                 )}
               />
+
+              <FormField
+                control={form.control}
+                name="startDate"
+                render={({ field }) => (
+                  <FormCalendar
+                    value={field.value}
+                    onChange={field.onChange}
+                    label="開始投資日期"
+                  />
+                )}
+              />
+
               <FormField
                 control={form.control}
                 name="retirementAge"
