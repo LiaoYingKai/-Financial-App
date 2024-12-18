@@ -45,10 +45,10 @@ export const calculateSemiAnnualCompoundAssets: CalculateSemiAnnualCompoundAsset
 
       // 儲存每月數據
       monthlyData.push({
-        month: month,
-        totalAssets: totalAssets,
-        totalSavings: totalSavings,
-        totalInvestments: totalInvestments,
+        month,
+        totalAssets,
+        totalSavings,
+        totalInvestments,
       });
     }
 

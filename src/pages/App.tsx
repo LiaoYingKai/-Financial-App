@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { calculateSemiAnnualCompoundAssets } from '@/lib/core';
+import { toCurrency } from '@/lib/currency';
 
 const FormSchema = z.object({
   currentAge: z.string(),
@@ -155,9 +156,9 @@ function App() {
           {result?.map((item) => (
             <div key={item.month} className="flex items-center gap-4">
               <div>第 {item.month} 個月</div>
-              <div>總資產：{item.totalAssets.toFixed(2)}</div>
-              <div>儲蓄金額：{item.totalSavings.toFixed(2)}</div>
-              <div>投資金額：{item.totalInvestments.toFixed(2)}</div>
+              <div>總資產：{toCurrency(item.totalAssets)}</div>
+              <div>儲蓄金額：{toCurrency(item.totalSavings)}</div>
+              <div>投資金額：{toCurrency(item.totalInvestments)}</div>
             </div>
           ))}
         </div>
