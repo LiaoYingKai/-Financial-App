@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import AssetsList from '@/components/AssetsList';
 import Layout from '@/components/Layout';
 import { Button } from '@/components/ui/button';
 import {
@@ -14,8 +15,7 @@ import {
   FormLabel,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { calculateSemiAnnualCompoundAssets } from '@/lib/core';
-import { toCurrency } from '@/lib/currency';
+import { Assets, calculateSemiAnnualCompoundAssets } from '@/lib/core';
 
 const FormSchema = z.object({
   currentAge: z.string(),
@@ -26,8 +26,7 @@ const FormSchema = z.object({
 });
 
 function App() {
-  const [result, setResult] =
-    useState<ReturnType<typeof calculateSemiAnnualCompoundAssets>>();
+  const [result, setResult] = useState<Assets[]>();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -40,16 +39,6 @@ function App() {
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data);
-    console.log(
-      calculateSemiAnnualCompoundAssets(
-        parseInt(data.currentAge),
-        parseInt(data.retirementAge),
-        parseInt(data.monthlySavings),
-        parseInt(data.monthlyInvestment),
-        parseInt(data.annualReturnRate)
-      )
-    );
     setResult(
       calculateSemiAnnualCompoundAssets(
         parseInt(data.currentAge),
@@ -153,14 +142,7 @@ function App() {
           </Form>
         </div>
         <div className="flex-1 overflow-y-scroll h-[calc(100vh-100px)]">
-          {result?.map((item) => (
-            <div key={item.month} className="flex items-center gap-4">
-              <div>第 {item.month} 個月</div>
-              <div>總資產：{toCurrency(item.totalAssets)}</div>
-              <div>儲蓄金額：{toCurrency(item.totalSavings)}</div>
-              <div>投資金額：{toCurrency(item.totalInvestments)}</div>
-            </div>
-          ))}
+          <AssetsList dataSource={result} />
         </div>
       </div>
     </Layout>
