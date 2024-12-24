@@ -21,6 +21,7 @@ import { Assets, calculateSemiAnnualCompoundAssets } from '@/lib/core';
 const FormSchema = z.object({
   birthday: z.date(),
   startDate: z.date(),
+  currentAge: z.string(),
   retirementAge: z.string(),
   monthlySavings: z.string(),
   monthlyInvestment: z.string(),
@@ -34,6 +35,7 @@ function App() {
     defaultValues: {
       birthday: new Date(),
       startDate: new Date(),
+      currentAge: '20',
       retirementAge: '65',
       monthlySavings: '1000',
       monthlyInvestment: '1000',
@@ -65,9 +67,10 @@ function App() {
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
     const age = getAge(data.birthday, data.startDate);
+    console.log('age:', age);
     setResult(
       calculateSemiAnnualCompoundAssets(
-        age,
+        parseInt(data.currentAge),
         parseInt(data.retirementAge),
         parseInt(data.monthlySavings),
         parseInt(data.monthlyInvestment),
@@ -106,6 +109,22 @@ function App() {
                     onChange={field.onChange}
                     label="開始投資日期"
                   />
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="currentAge"
+                render={({ field }) => (
+                  <FormItem className="flex items-center gap-2 space-y-0">
+                    <FormLabel className="flex-shrink-0 w-24">
+                      現在年齡
+                    </FormLabel>
+                    <FormControl>
+                      <Input placeholder="20" {...field} />
+                    </FormControl>
+                    歲
+                  </FormItem>
                 )}
               />
 
